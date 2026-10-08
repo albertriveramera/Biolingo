@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Biolingo | Biomedicine & Neuroscience Learning Odyssey</title>
+  <meta name="description" content="Master biomedicine and neuroscience from High School fundamentals to PhD frontier research with spaced repetition and dynamic questions.">
+  <meta name="theme-color" content="#0b0f19">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <div id="app-root">
+    <!-- Navigation (Mobile Bottom Bar / Desktop Sidebar) -->
+    <nav class="nav-sidebar" id="nav-sidebar" aria-label="Main Navigation">
+      <div class="nav-brand">
+        <span style="font-size: 26px;">⚡</span>
+        <div>
+          <div class="nav-brand-title">Biolingo</div>
+          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">Biomed & Neuro</div>
+        </div>
+      </div>
+      <button class="nav-item active" data-tab="path" aria-label="Learning Path">
+        <span class="nav-icon">🗺️</span>
+        <span>Learn</span>
+      </button>
+      <button class="nav-item" data-tab="review" aria-label="Spaced Repetition Review">
+        <span class="nav-icon">🧠</span>
+        <span>Review</span>
+      </button>
+      <button class="nav-item" data-tab="quests" aria-label="Daily Quests">
+        <span class="nav-icon">🎯</span>
+        <span>Quests</span>
+      </button>
+      <button class="nav-item" data-tab="badges" aria-label="Achievements and Profile">
+        <span class="nav-icon">🏆</span>
+        <span>Badges</span>
+      </button>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div class="main-content">
+      <!-- Sticky Top Header -->
+      <header class="top-header" id="top-header"></header>
+
+      <!-- Dynamic Active View -->
+      <main id="main-view"></main>
+    </div>
+  </div>
+
+  <noscript>
+    <div style="padding: 24px; text-align: center; color: #fff; background: #111;">
+      <h2>JavaScript Required</h2>
+      <p>Please enable JavaScript to run Biolingo.</p>
+    </div>
+  </noscript>
+
+  <!-- Core Data Banks -->
+  <script src="./data/curriculum.js"></script>
+  <script src="./data/facts_hs.js"></script>
+  <script src="./data/facts_ug.js"></script>
+  <script src="./data/facts_ms.js"></script>
+  <script src="./data/facts_phd.js"></script>
+  <script src="./data/facts.js"></script>
+
+  <!-- Game Engines & Services -->
+  <script src="./js/storage.js"></script>
+  <script src="./js/srs.js"></script>
+  <script src="./js/rewards.js"></script>
+  <script src="./js/audio.js"></script>
+  <script src="./js/mascot.js"></script>
+  <script src="./js/diagrams.js"></script>
+  <script src="./js/questions.js"></script>
+  <script src="./js/ui.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

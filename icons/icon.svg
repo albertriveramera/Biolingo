@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0b0f19"/>
+    </radialGradient>
+    <linearGradient id="axonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="synapseSpark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#bgGlow)"/>
+  
+  <!-- Dendrite Branches -->
+  <g stroke="#38bdf8" stroke-width="18" stroke-linecap="round" fill="none">
+    <path d="M 160 160 Q 90 90 50 120"/>
+    <path d="M 200 120 Q 170 50 110 60"/>
+    <path d="M 256 100 Q 256 30 220 35"/>
+    <path d="M 312 120 Q 340 50 400 65"/>
+    <path d="M 352 160 Q 422 90 462 120"/>
+  </g>
+
+  <!-- Axon Trunk -->
+  <path d="M 256 370 Q 256 460 340 470" fill="none" stroke="#0284c7" stroke-width="18" stroke-linecap="round"/>
+
+  <!-- Soma Core -->
+  <circle cx="256" cy="256" r="140" fill="url(#axonGrad)" filter="drop-shadow(0 16px 32px rgba(2,132,199,0.4))"/>
+
+  <!-- Happy Face -->
+  <circle cx="210" cy="240" r="22" fill="#1e293b"/>
+  <circle cx="302" cy="240" r="22" fill="#1e293b"/>
+  <circle cx="218" cy="232" r="7" fill="#ffffff"/>
+  <circle cx="310" cy="232" r="7" fill="#ffffff"/>
+  <path d="M 220 285 Q 256 330 292 285" stroke="#1e293b" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <circle cx="180" cy="265" r="18" fill="#f43f5e" opacity="0.5"/>
+  <circle cx="332" cy="265" r="18" fill="#f43f5e" opacity="0.5"/>
+
+  <!-- Synaptic spark -->
+  <polygon points="410,380 435,420 415,422 430,460 395,430 415,426" fill="url(#synapseSpark)"/>
+</svg>
