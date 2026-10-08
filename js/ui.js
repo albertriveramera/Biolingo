@@ -239,7 +239,20 @@
       }
 
       // Render Question Types
-      if (curQ.type === "mcq" || curQ.type === "cloze") {
+      if (curQ.type === "cloze") {
+        var sentenceHtml = (curQ.sentence || "Choose the missing term: {blank}").replace(
+          "{blank}",
+          '<span class="cloze-blank-slot" id="cloze-blank-slot">_______</span>'
+        );
+        html.push('    <div class="cloze-sentence-card">' + sentenceHtml + '</div>');
+        html.push('    <div class="options-grid">');
+        curQ.options.forEach(function(opt, idx) {
+          html.push('      <button class="option-card" data-idx="' + idx + '" data-val="' + encodeURIComponent(opt) + '">');
+          html.push('        <span>' + opt + '</span>');
+          html.push('      </button>');
+        });
+        html.push('    </div>');
+      } else if (curQ.type === "mcq") {
         html.push('    <div class="options-grid">');
         curQ.options.forEach(function(opt, idx) {
           html.push('      <button class="option-card" data-idx="' + idx + '" data-val="' + encodeURIComponent(opt) + '">');
@@ -330,6 +343,14 @@
             card.classList.add("selected");
             currentSelectedValue = decodeURIComponent(card.getAttribute("data-val"));
             actionBtn.disabled = false;
+
+            if (curQ.type === "cloze") {
+              var blankSlot = document.getElementById("cloze-blank-slot");
+              if (blankSlot) {
+                blankSlot.textContent = currentSelectedValue;
+                blankSlot.classList.add("filled");
+              }
+            }
           });
         });
       } else if (curQ.type === "truefalse") {
@@ -371,47 +392,137 @@
         bindSequenceArrows();
       } else if (curQ.type === "match_pairs") {
         var selectedLeftId = null;
+        var selectedRightText = null;
         var matchesMade = 0;
         var totalMatches = Object.keys(curQ.pairsMap).length;
 
         var leftBtns = container.querySelectorAll(".pair-left");
         var rightBtns = container.querySelectorAll(".pair-right");
 
+        function failMatch(leftElem, rightElem, leftId, rightText) {
+          if (hasChecked) return;
+          hasChecked = true;
+
+          if (leftElem) {
+            leftElem.classList.remove("selected");
+            leftElem.classList.add("mismatch");
+          }
+          if (rightElem) {
+            rightElem.classList.remove("selected");
+            rightElem.classList.add("mismatch");
+          }
+
+          // Disable further interaction on pair buttons
+          leftBtns.forEach(function(b) { b.style.pointerEvents = "none"; });
+          rightBtns.forEach(function(b) { b.style.pointerEvents = "none"; });
+
+          window.BiolingoAudio.playWrong();
+          window.BiolingoAudio.vibrate([60, 40, 60]);
+
+          footer.className = "lesson-footer state-wrong";
+          actionBtn.className = "btn-action-primary btn-check-wrong";
+
+          var leftItemObj = curQ.leftList.find(function(i) { return i.id === leftId; });
+          var leftLabel = leftItemObj ? leftItemObj.text : "Term";
+          var correctRight = curQ.pairsMap[leftId] || "";
+
+          feedbackSheet.innerHTML = [
+            '<div class="feedback-icon">💡</div>',
+            '<div class="feedback-text">',
+            '  <h4>Incorrect Match!</h4>',
+            '  <p><strong>' + leftLabel + '</strong> matches with: <em>' + correctRight + '</em>. ' + (curQ.explain || "We'll review this question again before finishing!") + '</p>',
+            '</div>'
+          ].join('');
+
+          feedbackSheet.style.display = "flex";
+          actionBtn.disabled = false;
+          actionBtn.textContent = "Continue";
+
+          callbacks.onAnswer(false);
+        }
+
+        function succeedMatch(leftElem, rightElem) {
+          window.BiolingoAudio.playCorrect(1);
+          if (leftElem) {
+            leftElem.classList.remove("selected");
+            leftElem.classList.add("matched");
+          }
+          if (rightElem) {
+            rightElem.classList.remove("selected");
+            rightElem.classList.add("matched");
+          }
+
+          selectedLeftId = null;
+          selectedRightText = null;
+          matchesMade++;
+
+          if (matchesMade >= totalMatches) {
+            hasChecked = true;
+            window.BiolingoAudio.playCorrect(session.getStats().currentCombo + 1);
+            window.BiolingoAudio.vibrate([40]);
+
+            footer.className = "lesson-footer state-correct";
+            actionBtn.className = "btn-action-primary btn-check-correct";
+            feedbackSheet.innerHTML = [
+              '<div class="feedback-icon">🎉</div>',
+              '<div class="feedback-text">',
+              '  <h4>All Pairs Matched!</h4>',
+              '  <p>' + (curQ.explain || "Spot on biological pairing!") + '</p>',
+              '</div>'
+            ].join('');
+
+            feedbackSheet.style.display = "flex";
+            actionBtn.disabled = false;
+            actionBtn.textContent = "Continue";
+
+            callbacks.onAnswer(true);
+          }
+        }
+
         leftBtns.forEach(function(btn) {
           btn.addEventListener("click", function() {
-            if (btn.classList.contains("matched")) return;
+            if (hasChecked || btn.classList.contains("matched")) return;
             window.BiolingoAudio.playClick();
-            leftBtns.forEach(function(b) { b.classList.remove("selected"); });
-            btn.classList.add("selected");
-            selectedLeftId = btn.getAttribute("data-id");
+            var leftId = btn.getAttribute("data-id");
+
+            if (selectedRightText) {
+              // Right was already selected, evaluate match!
+              var rightElem = container.querySelector('.pair-right.selected');
+              var expectedRight = curQ.pairsMap[leftId];
+              if (selectedRightText === expectedRight) {
+                succeedMatch(btn, rightElem);
+              } else {
+                failMatch(btn, rightElem, leftId, selectedRightText);
+              }
+            } else {
+              // Select / switch Left button
+              leftBtns.forEach(function(b) { b.classList.remove("selected"); });
+              btn.classList.add("selected");
+              selectedLeftId = leftId;
+            }
           });
         });
 
         rightBtns.forEach(function(btn) {
           btn.addEventListener("click", function() {
-            if (btn.classList.contains("matched") || !selectedLeftId) return;
-            var text = decodeURIComponent(btn.getAttribute("data-text"));
-            var targetMatch = curQ.pairsMap[selectedLeftId];
+            if (hasChecked || btn.classList.contains("matched")) return;
+            window.BiolingoAudio.playClick();
+            var rightText = decodeURIComponent(btn.getAttribute("data-text"));
 
-            if (text === targetMatch) {
-              window.BiolingoAudio.playCorrect(1);
-              btn.classList.add("matched");
-              var matchLeft = container.querySelector('.pair-left[data-id="' + selectedLeftId + '"]');
-              if (matchLeft) matchLeft.classList.add("matched");
-              selectedLeftId = null;
-              matchesMade++;
-
-              if (matchesMade >= totalMatches) {
-                currentSelectedValue = true;
-                actionBtn.disabled = false;
-                actionBtn.click(); // Auto-advance on completing all pairs!
+            if (selectedLeftId) {
+              // Left was already selected, evaluate match!
+              var leftElem = container.querySelector('.pair-left.selected');
+              var expectedRight = curQ.pairsMap[selectedLeftId];
+              if (rightText === expectedRight) {
+                succeedMatch(leftElem, btn);
+              } else {
+                failMatch(leftElem, btn, selectedLeftId, rightText);
               }
             } else {
-              window.BiolingoAudio.playWrong();
+              // Select / switch Right button
+              rightBtns.forEach(function(b) { b.classList.remove("selected"); });
               btn.classList.add("selected");
-              setTimeout(function() {
-                btn.classList.remove("selected");
-              }, 400);
+              selectedRightText = rightText;
             }
           });
         });

@@ -63,6 +63,12 @@ def main():
             
         if len(id_matches) != len(explain_matches):
             errors.append(f"Mismatch in {filename}: {len(id_matches)} facts but {len(explain_matches)} explanations")
+
+        # Verify cloze facts contain {blank}
+        cloze_sentences = re.findall(r'sentence:\s*["\'](.*?)["\']', content)
+        for s in cloze_sentences:
+            if "{blank}" not in s:
+                errors.append(f"Cloze sentence in {filename} missing {{blank}}: {s}")
             
     print(f"\nTotal curated facts registered: {total_facts}")
     
