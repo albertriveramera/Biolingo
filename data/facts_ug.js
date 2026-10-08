@@ -18,19 +18,19 @@ window.FACTS_UG = [
   {
     id: "ug-ap-002",
     unit: "u4",
-    diff: 3,
+    diff: 2,
     type: "numeric",
     prompt: "Approximate canonical mammalian neuronal resting membrane potential (in mV)",
     value: -70,
     unit: "mV",
     tolerance: 10,
     tags: ["biophysics", "action_potential"],
-    explain: "Resting membrane potential typically sits between -65 mV and -75 mV, primarily dictated by high resting K+ permeability via two-pore domain leak channels."
+    explain: "Resting membrane potential typically sits between -65 mV and -75 mV, primarily dictated by high resting K+ permeability via leak channels."
   },
   {
     id: "ug-ap-003",
     unit: "u4",
-    diff: 3,
+    diff: 2,
     type: "numeric",
     prompt: "Approximate potassium equilibrium potential (E_K) in typical mammalian neurons (in mV)",
     value: -90,
@@ -42,7 +42,7 @@ window.FACTS_UG = [
   {
     id: "ug-ap-004",
     unit: "u4",
-    diff: 3,
+    diff: 2,
     type: "numeric",
     prompt: "Approximate sodium equilibrium potential (E_Na) in typical mammalian neurons (in mV)",
     value: 60,
@@ -57,9 +57,9 @@ window.FACTS_UG = [
     diff: 2,
     type: "pair",
     left: "Na+/K+ ATPase Pump",
-    right: "Electrogenic transport of 3 Na+ out and 2 K+ into the cell per ATP molecule",
+    right: "Electrogenic primary active transport pumping 3 Na+ out and 2 K+ into the cell per ATP hydrolyzed",
     tags: ["biophysics", "transport"],
-    explain: "This maintains the steep transmembrane chemical concentration gradients that empower action potentials and secondary active transport."
+    explain: "Maintains steep transmembrane chemical gradients, consuming ~40% of the brain's total metabolic energy."
   },
   {
     id: "ug-ap-006",
@@ -67,9 +67,9 @@ window.FACTS_UG = [
     diff: 2,
     type: "sequence",
     prompt: "Chronological sequence of voltage-gated ion fluxes during an action potential",
-    steps: ["Graded depolarization reaches threshold (~ -55 mV)", "Rapid opening of Nav activation m-gates (Na+ influx surge)", "Nav inactivation h-gates close; delayed rectifier Kv channels open (K+ efflux)", "Afterhyperpolarization undershoot approaching E_K", "Return to resting potential via leak conductances and pump activity"],
+    steps: ["Depolarization reaches threshold (~ -55 mV)", "Rapid opening of Nav activation m-gates (Na+ influx surge)", "Nav inactivation h-gates close; delayed rectifier Kv channels open (K+ efflux)", "Afterhyperpolarization undershoot approaching E_K", "Return to resting potential via leak conductances and Na+/K+ pump"],
     tags: ["biophysics", "action_potential"],
-    explain: "Nav channels activate in microseconds, inactivate via their hinged lid IFM motif, while delayed rectifier Kv channels repolarize the cell membrane."
+    explain: "Nav channels activate in microseconds, inactivate via their hinged lid IFM motif, while Kv channels repolarize the membrane."
   },
   {
     id: "ug-ap-007",
@@ -94,42 +94,42 @@ window.FACTS_UG = [
   {
     id: "ug-ap-009",
     unit: "u4",
-    diff: 3,
-    type: "definition",
-    term: "Length Constant (lambda)",
-    definition: "Distance over which a passive electrotonic potential decays to 1/e (approx. 37%) of its initial amplitude: lambda = sqrt(r_m / r_i)",
-    tags: ["biophysics", "cable_theory"],
-    explain: "Higher membrane resistance (r_m, e.g. from myelin insulation) and lower axial internal resistance (r_i, e.g. larger axon caliber) increase lambda, boosting signal spread."
+    diff: 2,
+    type: "pair",
+    left: "Nodes of Ranvier",
+    right: "Unmyelinated periodic axonal gaps packed with Nav channels enabling rapid saltatory conduction",
+    tags: ["biophysics", "neuron"],
+    explain: "Action potentials skip electrotonically under myelin insulation and regenerate exclusively at the Nodes of Ranvier."
   },
   {
     id: "ug-ap-010",
     unit: "u4",
-    diff: 3,
-    type: "definition",
-    term: "Time Constant (tau)",
-    definition: "Time required for a membrane potential to charge to 1 - 1/e (approx. 63%) of its steady-state value: tau = r_m * c_m",
-    tags: ["biophysics", "cable_theory"],
-    explain: "A longer time constant broadens temporal summation windows, allowing asynchronous synaptic potentials to summate more easily."
+    diff: 2,
+    type: "pair",
+    left: "Tetrodotoxin (TTX)",
+    right: "Pufferfish neurotoxin that selectively blocks the pore of voltage-gated Na+ channels",
+    tags: ["biophysics", "pharmacology"],
+    explain: "TTX occludes Nav outer vestibules, completely blocking inward Na+ current without directly affecting Kv channels."
   },
   {
     id: "ug-ap-011",
     unit: "u4",
     diff: 2,
     type: "pair",
-    left: "Tetrodotoxin (TTX)",
-    right: "Pufferfish toxin that selectively occludes pore of voltage-gated Na+ channels",
+    left: "Tetraethylammonium (TEA)",
+    right: "Potassium channel blocker that eliminates Kv currents and prolongs action potential repolarization",
     tags: ["biophysics", "pharmacology"],
-    explain: "TTX binds to the outer vestibule of Nav channels, completely blocking sodium current and silencing action potentials without altering Kv currents."
+    explain: "TEA blocks delayed rectifier potassium channels, dramatically broadening the action potential waveform."
   },
   {
     id: "ug-ap-012",
     unit: "u4",
     diff: 2,
     type: "pair",
-    left: "Tetraethylammonium (TEA)",
-    right: "Quaternary ammonium cation that selectively blocks voltage-gated K+ channels",
-    tags: ["biophysics", "pharmacology"],
-    explain: "TEA blocks Kv channels, prolonging the action potential duration and abolishing the normal rapid repolarization phase."
+    left: "Schwann Cells vs. Oligodendrocytes",
+    right: "Schwann cells myelinate single PNS internodes; Oligodendrocytes myelinate multiple CNS axons",
+    tags: ["glia", "neuron"],
+    explain: "Oligodendrocytes can extend processes to insulate up to 50 distinct axonal segments within the brain and spinal cord."
   },
   {
     id: "ug-ap-013",
@@ -141,7 +141,7 @@ window.FACTS_UG = [
     options: ["Peak Overshoot", "Resting Potential", "Threshold", "Afterhyperpolarization"],
     hint: "Identify the apex of the action potential curve reaching positive voltage (+30 mV).",
     tags: ["biophysics", "action_potential"],
-    explain: "At the peak of the action potential overshoot, sodium conductance peaks and inactivation rapidly sets in."
+    explain: "At the peak of the action potential overshoot, sodium conductance peaks and inactivation sets in."
   },
   {
     id: "ug-ap-014",
@@ -153,7 +153,7 @@ window.FACTS_UG = [
     options: ["Afterhyperpolarization", "Threshold", "Depolarization Phase", "Peak Overshoot"],
     hint: "Identify the dip where membrane voltage drops below the resting potential line.",
     tags: ["biophysics", "action_potential"],
-    explain: "Sustained open state of delayed rectifier and calcium-activated K+ channels drags voltage near E_K (~ -90 mV)."
+    explain: "Sustained open state of delayed rectifier K+ channels drags voltage near E_K (~ -90 mV)."
   },
 
   // ==========================================
@@ -164,80 +164,82 @@ window.FACTS_UG = [
     unit: "u5",
     diff: 2,
     type: "definition",
-    term: "Synaptotagmin-1",
-    definition: "Transmembrane vesicle protein containing C2 domains that acts as the primary calcium sensor triggering rapid neurotransmitter release",
+    term: "Synaptotagmin",
+    definition: "Vesicle protein with C2 domains that acts as the primary calcium sensor triggering neurotransmitter release",
     tags: ["synapse", "snare"],
-    explain: "Binding of 5 Ca2+ ions to synaptotagmin's C2A and C2B domains drives membrane insertion and forces the SNARE complex to complete full fusion."
+    explain: "Binding of calcium to synaptotagmin triggers conformational changes that force the SNARE complex to complete membrane fusion."
   },
   {
     id: "ug-syn-002",
     unit: "u5",
     diff: 2,
     type: "pair",
-    left: "Core SNARE complex components",
-    right: "Synaptobrevin/VAMP2 (vesicle), Syntaxin-1 (plasma membrane), and SNAP-25 (plasma membrane)",
+    left: "Core SNARE Complex",
+    right: "Synaptobrevin (v-SNARE), Syntaxin-1 (t-SNARE), and SNAP-25 (t-SNARE)",
     tags: ["synapse", "snare"],
-    explain: "These form a tight four-helix bundle (one coil from synaptobrevin, one from syntaxin, two from SNAP-25) that bridges membranes with high mechanical torque."
+    explain: "Forms a tight four-helix bundle bridging the vesicle and presynaptic plasma membrane with high mechanical force."
   },
   {
     id: "ug-syn-003",
     unit: "u5",
     diff: 2,
     type: "pair",
-    left: "Botulinum Neurotoxins (BoNT)",
-    right: "Cleave specific SNARE proteins (SNAP-25, syntaxin, synaptobrevin), blocking acetylcholine release",
-    tags: ["synapse", "pharmacology"],
-    explain: "Cleavage of the SNARE bundle disables vesicle fusion at neuromuscular junctions, causing flaccid paralysis."
+    left: "AMPA Receptor",
+    right: "Ionotropic glutamate receptor mediating fast excitatory postsynaptic sodium influx (EPSPs)",
+    tags: ["synapse", "neurotransmitters"],
+    explain: "Responsible for the initial fast phase of excitatory synaptic transmission across mammalian brain synapses."
   },
   {
     id: "ug-syn-004",
     unit: "u5",
     diff: 2,
     type: "pair",
-    left: "AMPA Receptor",
-    right: "Ionotropic glutamate receptor mediating fast excitatory sodium influx",
+    left: "NMDA Receptor",
+    right: "Coincidence detector requiring both glutamate binding and depolarization to expel pore-blocking Mg2+",
     tags: ["synapse", "neurotransmitters"],
-    explain: "Tetrameric ligand-gated ion channels (GluA1-4) that mediate the vast majority of basal fast synaptic excitation in the CNS."
+    explain: "Conducts calcium into the postsynaptic spine, triggering intracellular signaling cascades for synaptic plasticity."
   },
   {
     id: "ug-syn-005",
     unit: "u5",
     diff: 2,
     type: "pair",
-    left: "NMDA Receptor",
-    right: "Coincidence detector requiring glutamate, glycine, and depolarization to dislodge pore-blocking Mg2+",
+    left: "GABA-A Receptor",
+    right: "Ligand-gated chloride channel mediating fast inhibitory postsynaptic potentials (IPSPs)",
     tags: ["synapse", "neurotransmitters"],
-    explain: "High permeability to Ca2+ makes NMDARs the essential molecular triggers for long-term synaptic plasticity (LTP/LTD)."
+    explain: "GABA is the chief inhibitory neurotransmitter of the vertebrate CNS; GABA-A activation hyperpolarizes or shunts neurons."
   },
   {
     id: "ug-syn-006",
     unit: "u5",
     diff: 2,
     type: "pair",
-    left: "GABA-A Receptor",
-    right: "Pentameric ligand-gated chloride ion channel mediating fast hyperpolarizing IPSPs",
+    left: "Acetylcholinesterase (AChE)",
+    right: "Rapid synaptic cleft enzyme that hydrolyzes acetylcholine into choline and acetate",
     tags: ["synapse", "neurotransmitters"],
-    explain: "Opening permits Cl- influx (if resting potential is more positive than E_Cl), hyperpolarizing or shunting the neuronal membrane."
+    explain: "Terminates cholinergic neurotransmission in milliseconds, preventing persistent muscle contraction."
   },
   {
     id: "ug-syn-007",
     unit: "u5",
     diff: 2,
-    type: "pair",
-    left: "GABA-B Receptor",
-    right: "Metabotropic heterodimeric GPCR coupled to Gi/o, opening GIRK K+ channels and inhibiting Cav channels",
-    tags: ["synapse", "gpcr"],
-    explain: "Produces slow, prolonged inhibitory postsynaptic potentials via G-protein beta-gamma subunit interactions."
+    type: "sequence",
+    prompt: "Chronological sequence of chemical neurotransmission across a synapse",
+    steps: ["Action potential arrives at presynaptic terminal bouton", "Voltage-gated Ca2+ channels open; local Ca2+ microdomain forms", "Ca2+ binds synaptotagmin; SNARE complex completes vesicle fusion", "Neurotransmitter diffuses across synaptic cleft", "Postsynaptic receptor activation triggers EPSP or IPSP"],
+    tags: ["synapse", "biophysics"],
+    explain: "Synaptic delay is approximately 0.5 to 1.0 ms, largely determined by calcium influx and vesicle fusion kinetics."
   },
   {
     id: "ug-syn-008",
     unit: "u5",
     diff: 2,
-    type: "sequence",
-    prompt: "Chronological sequence of chemical neurotransmission across a synapse",
-    steps: ["Action potential arrives at presynaptic terminal bouton", "Voltage-gated P/Q and N-type Ca2+ channels open; local Ca2+ microdomain forms", "Ca2+ binds synaptotagmin; SNARE complex completes vesicle fusion", "Neurotransmitter diffuses across 20-30nm synaptic cleft", "Postsynaptic receptor activation triggers EPSP or IPSP", "Neurotransmitter cleared via reuptake transporters or enzymatic degradation"],
-    tags: ["synapse", "biophysics"],
-    explain: "Synaptic delay is typically 0.3 to 1.0 ms, driven primarily by channel opening and vesicle fusion dynamics."
+    type: "diagram",
+    diagram: "synapse",
+    targetLabel: "Synaptic Vesicle",
+    options: ["Synaptic Vesicle", "Postsynaptic Density", "Presynaptic Bouton", "Synaptic Cleft"],
+    hint: "Identify the round membrane spheres clustered in the presynaptic terminal.",
+    tags: ["synapse", "anatomy"],
+    explain: "Synaptic vesicles store thousands of neurotransmitter molecules and dock at the presynaptic active zone."
   },
   {
     id: "ug-syn-009",
@@ -245,44 +247,21 @@ window.FACTS_UG = [
     diff: 2,
     type: "diagram",
     diagram: "synapse",
-    targetLabel: "Synaptic Vesicle",
-    options: ["Synaptic Vesicle", "Postsynaptic Density", "Voltage-Gated Ca2+ Channel", "Neurotransmitter Transporter"],
-    hint: "Identify the round membrane spheres clustered in the presynaptic terminal.",
+    targetLabel: "Postsynaptic Density",
+    options: ["Postsynaptic Density", "Mitochondrion", "Presynaptic Bouton", "Synaptic Cleft"],
+    hint: "Identify the dense protein thickening on the receiving dendritic spine membrane.",
     tags: ["synapse", "anatomy"],
-    explain: "Vesicles are loaded with neurotransmitters via vesicular proton-coupled antiporters like VGLUT and VGAT."
+    explain: "The postsynaptic density is packed with neurotransmitter receptors, scaffolding proteins like PSD-95, and signaling kinases."
   },
   {
     id: "ug-syn-010",
     unit: "u5",
     diff: 2,
-    type: "diagram",
-    diagram: "synapse",
-    targetLabel: "Postsynaptic Density",
-    options: ["Postsynaptic Density", "Mitochondrion", "Presynaptic Bouton", "Synaptic Cleft"],
-    hint: "Identify the electron-dense protein scaffold on the receiving spine membrane.",
-    tags: ["synapse", "anatomy"],
-    explain: "The postsynaptic density (PSD) contains high concentrations of PSD-95, scaffolding glutamate receptors and signaling kinases."
-  },
-  {
-    id: "ug-syn-011",
-    unit: "u5",
-    diff: 1,
-    type: "truefalse",
-    statement: "Spatial summation occurs when multiple distinct synaptic inputs arrive simultaneously at different dendritic locations on the same neuron.",
-    isTrue: true,
+    type: "pair",
+    left: "Spatial Summation",
+    right: "Integration of simultaneous synaptic potentials originating from different dendritic locations",
     tags: ["synapse", "biophysics"],
-    explain: "Spatial summation combines inputs dispersed in space, whereas temporal summation combines successive inputs from the same synapse in time."
-  },
-  {
-    id: "ug-syn-012",
-    unit: "u5",
-    diff: 2,
-    type: "cloze",
-    sentence: "The primary enzyme in the synaptic cleft responsible for hydrolyzing acetylcholine into choline and acetate is {blank}.",
-    answer: "Acetylcholinesterase",
-    options: ["Acetylcholinesterase", "Choline acetyltransferase", "Monoamine oxidase", "Catechol-O-methyltransferase"],
-    tags: ["synapse", "neurotransmitters"],
-    explain: "AChE is one of the fastest enzymes known, operating near the diffusion limit to terminate cholinergic signaling in milliseconds."
+    explain: "Temporal summation integrates successive inputs from a single synapse arriving in rapid succession."
   },
 
   // ==========================================
@@ -293,20 +272,20 @@ window.FACTS_UG = [
     unit: "u6",
     diff: 2,
     type: "pair",
-    left: "Gs protein alpha subunit",
-    right: "Stimulates adenylyl cyclase, elevating intracellular cAMP and activating PKA",
+    left: "Gs Protein Cascade",
+    right: "Stimulates adenylyl cyclase, elevating intracellular cAMP and activating Protein Kinase A (PKA)",
     tags: ["signaling", "gpcr"],
-    explain: "cAMP activates Protein Kinase A by dissociating regulatory subunits from catalytic subunits."
+    explain: "In contrast, Gi proteins inhibit adenylyl cyclase, lowering intracellular cAMP."
   },
   {
     id: "ug-sig-002",
     unit: "u6",
     diff: 2,
     type: "pair",
-    left: "Gq protein alpha subunit",
-    right: "Activates Phospholipase C-beta (PLC), cleaving PIP2 into IP3 and DAG",
+    left: "Gq Protein Cascade",
+    right: "Activates Phospholipase C (PLC), cleaving PIP2 into second messengers IP3 and DAG",
     tags: ["signaling", "gpcr"],
-    explain: "IP3 diffuses to the endoplasmic reticulum to open IP3 receptors and liberate Ca2+, while membrane DAG recruits Protein Kinase C (PKC)."
+    explain: "IP3 triggers calcium release from the endoplasmic reticulum, while DAG activates Protein Kinase C (PKC)."
   },
   {
     id: "ug-sig-003",
@@ -314,29 +293,29 @@ window.FACTS_UG = [
     diff: 2,
     type: "sequence",
     prompt: "Arrange the canonical MAPK / ERK signaling cascade in sequential order",
-    steps: ["Receptor Tyrosine Kinase autophosphorylation & Grb2-SOS recruitment", "Ras-GTP activation (small GTPase exchange)", "Raf (MAPKKK) activation and phosphorylation", "MEK1/2 (MAPKK) dual-specificity phosphorylation", "ERK1/2 (MAPK) phosphorylation and translocation to nucleus"],
+    steps: ["Receptor Tyrosine Kinase autophosphorylation & Grb2-SOS recruitment", "Ras-GTP small GTPase activation", "Raf kinase activation and phosphorylation", "MEK dual-specificity phosphorylation", "ERK kinase phosphorylation and nuclear translocation"],
     tags: ["signaling", "biomedicine"],
-    explain: "The canonical Raf-MEK-ERK cascade controls cell survival, division, and neuronal transcriptional regulation."
+    explain: "The Raf-MEK-ERK pathway regulates gene transcription governing cellular survival and differentiation."
   },
   {
     id: "ug-sig-004",
     unit: "u6",
     diff: 2,
     type: "pair",
-    left: "MHC Class I molecules",
-    right: "Present endogenous cytoplasmic peptides to CD8+ Cytotoxic T cells",
+    left: "MHC Class I",
+    right: "Presents endogenous cytoplasmic peptides to CD8+ Cytotoxic T cells on all nucleated cells",
     tags: ["immune", "biomedicine"],
-    explain: "Expressed on virtually all nucleated cells; sampled by CD8+ T cells to detect intracellular viruses or malignant transformations."
+    explain: "Allows the immune system to detect and destroy virally infected or cancerous cells."
   },
   {
     id: "ug-sig-005",
     unit: "u6",
     diff: 2,
     type: "pair",
-    left: "MHC Class II molecules",
-    right: "Present exogenous phagocytosed peptides to CD4+ Helper T cells",
+    left: "MHC Class II",
+    right: "Presents engulfed exogenous antigens to CD4+ Helper T cells on antigen-presenting cells",
     tags: ["immune", "biomedicine"],
-    explain: "Expressed primarily by professional antigen-presenting cells: dendritic cells, macrophages, and B lymphocytes."
+    explain: "Expressed by dendritic cells, macrophages, and B cells to coordinate adaptive immune responses."
   },
   {
     id: "ug-sig-006",
@@ -344,99 +323,48 @@ window.FACTS_UG = [
     diff: 2,
     type: "definition",
     term: "Blood-Brain Barrier (BBB)",
-    definition: "Specialized vascular interface composed of non-fenestrated brain capillary endothelial cells with tight junctions, pericytes, and astrocytic end-feet",
+    definition: "Selective vascular barrier of continuous brain capillary endothelial cells with tight junctions, pericytes, and astrocytic end-feet",
     tags: ["bbb", "homeostasis"],
-    explain: "Claudin-5, occludin, and ZO-1 proteins form tight junctions that restrict paracellular passage to lipophilic molecules smaller than ~400 Da."
+    explain: "Claudin and occludin tight junctions protect brain parenchyma from toxins and fluctuations in plasma composition."
   },
   {
     id: "ug-sig-007",
     unit: "u6",
     diff: 2,
-    type: "sequence",
-    prompt: "Trace the endocrine feedback cascade of the Hypothalamic-Pituitary-Adrenal (HPA) axis",
-    steps: ["Hypothalamus secretes Corticotropin-Releasing Hormone (CRH)", "Anterior pituitary releases Adrenocorticotropic Hormone (ACTH)", "Adrenal cortex (zona fasciculata) synthesizes and releases Cortisol", "Cortisol exerts negative feedback inhibition on hypothalamus and pituitary"],
+    type: "pair",
+    left: "Hypothalamic-Pituitary-Adrenal (HPA) Axis",
+    right: "Neuroendocrine cascade releasing CRH, ACTH, and Cortisol in response to physiological stress",
     tags: ["homeostasis", "endocrine"],
-    explain: "The HPA axis governs physiological stress responses and circadian rhythm; dysregulated feedback is implicated in depressive disorders."
+    explain: "Cortisol exerts negative feedback on the hypothalamus and pituitary to terminate the stress response."
   },
   {
     id: "ug-sig-008",
     unit: "u6",
     diff: 2,
-    type: "truefalse",
-    statement: "Mature erythrocytes (red blood cells) express abundant MHC Class I molecules on their outer membrane.",
-    isTrue: false,
-    falseVersion: "Mature erythrocytes lack a nucleus and do not express MHC Class I molecules.",
-    tags: ["immune", "biomedicine"],
-    explain: "Because mature mammalian RBCs lack nuclei and ribosomes, they do not synthesize or express MHC Class I molecules."
-  },
-  {
-    id: "ug-ap-015",
-    unit: "u4",
-    diff: 3,
     type: "pair",
-    left: "Hinged-Lid Inactivation (IFM Motif)",
-    right: "Hydrophobic isoleucine-phenylalanine-methionine peptide loop that plugs the open pore of Nav channels",
-    tags: ["biophysics", "channels"],
-    explain: "Discovered by Armstrong and Bezanilla; this fast inactivation occurs within 1 millisecond of channel opening."
-  },
-  {
-    id: "ug-ap-016",
-    unit: "u4",
-    diff: 3,
-    type: "pair",
-    left: "Rheobase",
-    right: "Minimal electrical current amplitude of infinite duration required to threshold-fire an action potential",
-    tags: ["biophysics", "electrophysiology"],
-    explain: "Related to chronaxie, which is the minimum time needed for a current twice the rheobase strength to trigger an AP."
-  },
-  {
-    id: "ug-syn-013",
-    unit: "u5",
-    diff: 2,
-    type: "pair",
-    left: "Tyrosine Hydroxylase (TH)",
-    right: "Rate-limiting enzyme converting L-tyrosine into L-DOPA in catecholamine biosynthesis",
-    tags: ["neurotransmitters", "synapse"],
-    explain: "Requires tetrahydrobiopterin (BH4) cofactor; inhibited by AMPT and subject to feedback end-product inhibition."
-  },
-  {
-    id: "ug-syn-014",
-    unit: "u5",
-    diff: 2,
-    type: "pair",
-    left: "Glutamine Synthetase",
-    right: "Astrocytic enzyme converting recaptured glutamate into benign glutamine for neuronal shuttle",
-    tags: ["synapse", "glia"],
-    explain: "Part of the glutamate-glutamine cycle preventing neurotoxic extracellular glutamate build-up."
-  },
-  {
-    id: "ug-syn-015",
-    unit: "u5",
-    diff: 2,
-    type: "pair",
-    left: "Strychnine",
-    right: "Potent alkaloid antagonist of strychnine-sensitive glycine receptors in the spinal cord and brainstem",
-    tags: ["synapse", "pharmacology"],
-    explain: "Blocking glycine inhibition unleashes uncontrolled motor firing, causing violent tetanic convulsions."
+    left: "Hippocampus",
+    right: "Medial temporal lobe structure essential for consolidating short-term into long-term declarative memories",
+    tags: ["brain_gross", "anatomy"],
+    explain: "Damage to the hippocampus produces profound anterograde amnesia (inability to form new declarative memories)."
   },
   {
     id: "ug-sig-009",
     unit: "u6",
-    diff: 3,
+    diff: 2,
     type: "pair",
-    left: "Beta-Arrestin Recruitment",
-    right: "Binds GRK-phosphorylated GPCRs to uncouple G-proteins and mediate clathrin-dependent receptor endocytosis",
-    tags: ["signaling", "gpcr"],
-    explain: "Drives receptor desensitization and tolerance (e.g., opioid tolerance with prolonged morphine use)."
+    left: "Amygdala",
+    right: "Limbic nucleus critical for processing emotional valence, threat evaluation, and fear conditioning",
+    tags: ["brain_gross", "anatomy"],
+    explain: "Interacts closely with the hippocampus to modulate memory consolidation based on emotional arousal."
   },
   {
     id: "ug-sig-010",
     unit: "u6",
     diff: 2,
     type: "pair",
-    left: "Cytotoxic CD8+ T Lymphocyte",
-    right: "Releases perforin and granzymes to induce apoptotic death of virally infected or neoplastic cells",
-    tags: ["immune", "biomedicine"],
-    explain: "Perforin forms pores in the target plasma membrane, permitting entry of granzyme B which cleaves procaspases."
+    left: "Thalamus",
+    right: "Central sensory relay hub routing incoming sensory information (except smell) to cerebral cortex",
+    tags: ["brain_gross", "anatomy"],
+    explain: "Relays visual input via the LGN and auditory input via the MGN to their respective cortical areas."
   }
 ];
