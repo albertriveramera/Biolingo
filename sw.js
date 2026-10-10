@@ -1,6 +1,6 @@
 // Biolingo Service Worker (Cache-First Offline Strategy)
 
-var CACHE_NAME = "biolingo-cache-v1";
+var CACHE_NAME = "biolingo-cache-v2";
 var ASSETS = [
   "./",
   "./index.html",
@@ -8,11 +8,17 @@ var ASSETS = [
   "./icons/icon.svg",
   "./css/styles.css",
   "./data/curriculum.js",
+  "./data/i18n_es.js",
+  "./data/facts_es_hs.js",
+  "./data/facts_es_ug.js",
+  "./data/facts_es_ms.js",
+  "./data/facts_es_phd.js",
   "./data/facts_hs.js",
   "./data/facts_ug.js",
   "./data/facts_ms.js",
   "./data/facts_phd.js",
   "./data/facts.js",
+  "./js/i18n.js",
   "./js/storage.js",
   "./js/srs.js",
   "./js/rewards.js",

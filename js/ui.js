@@ -2,6 +2,8 @@
 // Path, Lesson, SRS Review, Quests, Badges, and Modal Views
 
 (function() {
+  function T(key, params) { return window.BiolingoI18n.t(key, params); }
+
   function renderConfetti() {
     var canvas = document.createElement("canvas");
     canvas.className = "confetti-canvas";
@@ -79,22 +81,22 @@
       if (!header) return;
 
       var flameClass = state.streak.current > 0 ? "stat-chip streak active" : "stat-chip streak";
-      var freezeBadge = state.streak.freezesAvailable > 0 ? '<span title="Streak freeze active"> 🛡️' + state.streak.freezesAvailable + '</span>' : '';
+      var freezeBadge = state.streak.freezesAvailable > 0 ? '<span title="' + T("header.freeze") + '"> 🛡️' + state.streak.freezesAvailable + '</span>' : '';
 
       header.innerHTML = [
         '<div class="top-header-left">',
-        '  <div class="' + flameClass + '" title="Daily Study Streak">',
+        '  <div class="' + flameClass + '" title="' + T("header.streak") + '">',
         '    <span>🔥</span><span>' + state.streak.current + '</span>' + freezeBadge,
         '  </div>',
-        '  <div class="stat-chip xp" title="Total XP">',
+        '  <div class="stat-chip xp" title="' + T("header.xp") + '">',
         '    <span>⚡</span><span>' + state.stats.xp + ' XP</span>',
         '  </div>',
         '</div>',
         '<div class="top-header-right">',
-        '  <div class="stat-chip level" title="Player Level">',
-        '    <span>🎖️</span><span>Lvl ' + lvlData.level + ' (' + lvlData.progressPercent + '%)</span>',
+        '  <div class="stat-chip level" title="' + T("header.level") + '">',
+        '    <span>🎖️</span><span>' + T("header.lvl", { n: lvlData.level, p: lvlData.progressPercent }) + '</span>',
         '  </div>',
-        '  <button id="btn-open-settings" style="font-size: 19px; padding: 4px; color: var(--text-secondary);" title="Settings">⚙️</button>',
+        '  <button id="btn-open-settings" style="font-size: 19px; padding: 4px; color: var(--text-secondary);" title="' + T("header.settings") + '">⚙️</button>',
         '</div>'
       ].join('');
 
@@ -110,7 +112,8 @@
       var curriculum = window.CURRICULUM;
       var html = ['<div class="page-container">'];
 
-      curriculum.forEach(function(lvl) {
+      curriculum.forEach(function(rawLvl) {
+        var lvl = window.BiolingoI18n.level(rawLvl);
         var isLevelUnlocked = state.progress.unlockedLevels.indexOf(lvl.levelId) !== -1;
 
         html.push('<div class="level-section">');
@@ -121,13 +124,14 @@
 
         if (!isLevelUnlocked) {
           html.push('    <div class="level-actions">');
-          html.push('      <button class="btn-skip-ahead" data-level="' + lvl.levelId + '">🚀 Test Out / Skip Ahead</button>');
+          html.push('      <button class="btn-skip-ahead" data-level="' + lvl.levelId + '">' + T("path.skip") + '</button>');
           html.push('    </div>');
         }
         html.push('  </div>');
 
         // Render Units
-        lvl.units.forEach(function(unit) {
+        rawLvl.units.forEach(function(rawUnit) {
+          var unit = window.BiolingoI18n.unit(rawUnit);
           var isUnitUnlocked = isLevelUnlocked && state.progress.unlockedUnits.indexOf(unit.id) !== -1;
 
           html.push('  <div class="unit-card">');
@@ -173,7 +177,7 @@
               html.push('          <span class="node-stars">★★★</span>');
             }
             html.push('        </button>');
-            html.push('        <div style="font-size:12px; font-weight:700; margin-top:6px; color:var(--text-secondary);">' + lesson.title + '</div>');
+            html.push('        <div style="font-size:12px; font-weight:700; margin-top:6px; color:var(--text-secondary);">' + window.BiolingoI18n.lesson(lesson).title + '</div>');
             html.push('      </div>');
           });
           html.push('    </div>'); // path-nodes
@@ -223,10 +227,10 @@
         '    <div class="lesson-progress-bar">',
         '      <div class="lesson-progress-fill" style="width: ' + progressPct + '%;"></div>',
         '    </div>',
-        (curCombo >= 2 ? '<div class="lesson-combo-indicator">🔥 ' + curCombo + 'x Combo</div>' : ''),
+        (curCombo >= 2 ? '<div class="lesson-combo-indicator">' + T("lesson.combo", { n: curCombo }) + '</div>' : ''),
         '  </div>',
         '  <div class="lesson-body">',
-        '    <div class="question-category">' + (curQ.promptCategory || 'Knowledge Check') + '</div>',
+        '    <div class="question-category">' + (curQ.promptCategory || T("lesson.defaultCategory")) + '</div>',
         '    <h2 class="question-title">' + curQ.prompt + '</h2>'
       ];
 
@@ -240,7 +244,7 @@
 
       // Render Question Types
       if (curQ.type === "cloze") {
-        var sentenceHtml = (curQ.sentence || "Choose the missing term: {blank}").replace(
+        var sentenceHtml = (curQ.sentence || T("lesson.clozeDefault", { blank: "{blank}" })).replace(
           "{blank}",
           '<span class="cloze-blank-slot" id="cloze-blank-slot">_______</span>'
         );
@@ -263,8 +267,8 @@
       } else if (curQ.type === "truefalse") {
         html.push('    <div class="question-quote" style="font-size:16px;">' + curQ.statement + '</div>');
         html.push('    <div class="tf-grid">');
-        html.push('      <button class="tf-btn" data-val="true"><span>✅</span><span>TRUE</span></button>');
-        html.push('      <button class="tf-btn" data-val="false"><span>❌</span><span>FALSE</span></button>');
+        html.push('      <button class="tf-btn" data-val="true"><span>✅</span><span>' + T("lesson.true") + '</span></button>');
+        html.push('      <button class="tf-btn" data-val="false"><span>❌</span><span>' + T("lesson.false") + '</span></button>');
         html.push('    </div>');
       } else if (curQ.type === "sequence") {
         html.push('    <div class="sequence-list" id="seq-container">');
@@ -311,7 +315,7 @@
       html.push('  <div class="lesson-footer" id="lesson-footer">');
       html.push('    <div class="lesson-footer-content">');
       html.push('      <div class="feedback-sheet" id="feedback-sheet" style="display:none;"></div>');
-      html.push('      <button class="btn-action-primary" id="btn-lesson-action" disabled>Check</button>');
+      html.push('      <button class="btn-action-primary" id="btn-lesson-action" disabled>' + T("lesson.check") + '</button>');
       html.push('    </div>');
       html.push('  </div>');
       html.push('</div>');
@@ -324,7 +328,7 @@
       var quitBtn = document.getElementById("btn-quit-lesson");
 
       quitBtn.addEventListener("click", function() {
-        if (confirm("Leave lesson? Current progress in this lesson will be lost.")) {
+        if (confirm(T("lesson.quitConfirm"))) {
           callbacks.onQuit();
         }
       });
@@ -423,20 +427,20 @@
           actionBtn.className = "btn-action-primary btn-check-wrong";
 
           var leftItemObj = curQ.leftList.find(function(i) { return i.id === leftId; });
-          var leftLabel = leftItemObj ? leftItemObj.text : "Term";
+          var leftLabel = leftItemObj ? leftItemObj.text : T("lesson.term");
           var correctRight = curQ.pairsMap[leftId] || "";
 
           feedbackSheet.innerHTML = [
             '<div class="feedback-icon">💡</div>',
             '<div class="feedback-text">',
-            '  <h4>Incorrect Match!</h4>',
-            '  <p><strong>' + leftLabel + '</strong> matches with: <em>' + correctRight + '</em>. ' + (curQ.explain || "We'll review this question again before finishing!") + '</p>',
+            '  <h4>' + T("lesson.incorrectMatch") + '</h4>',
+            '  <p>' + T("lesson.matchesWith", { left: leftLabel, right: correctRight }) + (curQ.explain || T("lesson.reviewAgain")) + '</p>',
             '</div>'
           ].join('');
 
           feedbackSheet.style.display = "flex";
           actionBtn.disabled = false;
-          actionBtn.textContent = "Continue";
+          actionBtn.textContent = T("lesson.continue");
 
           callbacks.onAnswer(false);
         }
@@ -466,14 +470,14 @@
             feedbackSheet.innerHTML = [
               '<div class="feedback-icon">🎉</div>',
               '<div class="feedback-text">',
-              '  <h4>All Pairs Matched!</h4>',
-              '  <p>' + (curQ.explain || "Spot on biological pairing!") + '</p>',
+              '  <h4>' + T("lesson.allMatched") + '</h4>',
+              '  <p>' + (curQ.explain || T("lesson.spotPairing")) + '</p>',
               '</div>'
             ].join('');
 
             feedbackSheet.style.display = "flex";
             actionBtn.disabled = false;
-            actionBtn.textContent = "Continue";
+            actionBtn.textContent = T("lesson.continue");
 
             callbacks.onAnswer(true);
           }
@@ -553,8 +557,8 @@
             feedbackSheet.innerHTML = [
               '<div class="feedback-icon">🎉</div>',
               '<div class="feedback-text">',
-              '  <h4>Excellent!</h4>',
-              '  <p>' + (curQ.explain || "Spot on biophysical understanding!") + '</p>',
+              '  <h4>' + T("lesson.excellent") + '</h4>',
+              '  <p>' + (curQ.explain || T("lesson.spotUnderstanding")) + '</p>',
               '</div>'
             ].join('');
           } else {
@@ -565,14 +569,14 @@
             feedbackSheet.innerHTML = [
               '<div class="feedback-icon">💡</div>',
               '<div class="feedback-text">',
-              '  <h4>Review this fact</h4>',
-              '  <p>' + (curQ.explain || "We will review this question again before finishing!") + '</p>',
+              '  <h4>' + T("lesson.reviewFact") + '</h4>',
+              '  <p>' + (curQ.explain || T("lesson.reviewAgain2")) + '</p>',
               '</div>'
             ].join('');
           }
 
           feedbackSheet.style.display = "flex";
-          actionBtn.textContent = "Continue";
+          actionBtn.textContent = T("lesson.continue");
 
           // Inform session
           callbacks.onAnswer(isCorrect);
@@ -591,23 +595,23 @@
         '<div class="celebration-view">',
         '  <div class="celebration-card">',
         '    <div style="margin-bottom: 12px;">' + window.BiolingoMascot.render("cheering", 110) + '</div>',
-        '    <h1 style="font-size: 26px; font-weight: 900; margin-bottom: 4px;">Lesson Completed!</h1>',
-        '    <p style="font-size: 14px; color: var(--text-secondary);">Your neural pathways are strengthening.</p>',
+        '    <h1 style="font-size: 26px; font-weight: 900; margin-bottom: 4px;">' + T("celebration.title") + '</h1>',
+        '    <p style="font-size: 14px; color: var(--text-secondary);">' + T("celebration.sub") + '</p>',
         '    <div class="celebration-stats-grid">',
         '      <div class="celeb-stat-box">',
         '        <div class="celeb-stat-val">+' + stats.totalXpEarned + '</div>',
-        '        <div class="celeb-stat-label">XP Earned</div>',
+        '        <div class="celeb-stat-label">' + T("celebration.xp") + '</div>',
         '      </div>',
         '      <div class="celeb-stat-box">',
         '        <div class="celeb-stat-val">' + stats.firstTryAccuracy + '%</div>',
-        '        <div class="celeb-stat-label">Accuracy</div>',
+        '        <div class="celeb-stat-label">' + T("celebration.accuracy") + '</div>',
         '      </div>',
         '      <div class="celeb-stat-box">',
         '        <div class="celeb-stat-val">🔥 ' + stats.maxCombo + 'x</div>',
-        '        <div class="celeb-stat-label">Max Combo</div>',
+        '        <div class="celeb-stat-label">' + T("celebration.maxCombo") + '</div>',
         '      </div>',
         '    </div>',
-        '    <button class="btn-action-primary" id="btn-celeb-done" style="width: 100%;">Continue Path</button>',
+        '    <button class="btn-action-primary" id="btn-celeb-done" style="width: 100%;">' + T("celebration.continue") + '</button>',
         '  </div>',
         '</div>'
       ].join('');
@@ -621,21 +625,21 @@
       var html = [
         '<div class="page-container">',
         '  <div style="margin-bottom: 24px;">',
-        '    <h2 style="font-size: 24px; font-weight: 900;">Spaced Repetition & Retention</h2>',
-        '    <p style="color: var(--text-secondary); font-size: 14px;">Facts you miss return more frequently. Box 5 facts are consolidated into long-term memory.</p>',
+        '    <h2 style="font-size: 24px; font-weight: 900;">' + T("review.title") + '</h2>',
+        '    <p style="color: var(--text-secondary); font-size: 14px;">' + T("review.desc") + '</p>',
         '  </div>',
         '  <div class="srs-box-grid">',
-        '    <div class="srs-box-card"><div class="srs-box-num">Box 1</div><div class="srs-box-count">' + srsDist[1] + '</div></div>',
-        '    <div class="srs-box-card"><div class="srs-box-num">Box 2</div><div class="srs-box-count">' + srsDist[2] + '</div></div>',
-        '    <div class="srs-box-card"><div class="srs-box-num">Box 3</div><div class="srs-box-count">' + srsDist[3] + '</div></div>',
-        '    <div class="srs-box-card"><div class="srs-box-num">Box 4</div><div class="srs-box-count">' + srsDist[4] + '</div></div>',
-        '    <div class="srs-box-card"><div class="srs-box-num">Box 5 (Mastered)</div><div class="srs-box-count" style="color:var(--accent-success);">' + srsDist[5] + '</div></div>',
+        '    <div class="srs-box-card"><div class="srs-box-num">' + T("review.box", { n: 1 }) + '</div><div class="srs-box-count">' + srsDist[1] + '</div></div>',
+        '    <div class="srs-box-card"><div class="srs-box-num">' + T("review.box", { n: 2 }) + '</div><div class="srs-box-count">' + srsDist[2] + '</div></div>',
+        '    <div class="srs-box-card"><div class="srs-box-num">' + T("review.box", { n: 3 }) + '</div><div class="srs-box-count">' + srsDist[3] + '</div></div>',
+        '    <div class="srs-box-card"><div class="srs-box-num">' + T("review.box", { n: 4 }) + '</div><div class="srs-box-count">' + srsDist[4] + '</div></div>',
+        '    <div class="srs-box-card"><div class="srs-box-num">' + T("review.box5") + '</div><div class="srs-box-count" style="color:var(--accent-success);">' + srsDist[5] + '</div></div>',
         '  </div>',
         '  <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; text-align: center;">',
         '    <div style="font-size: 40px; margin-bottom: 12px;">🧠</div>',
-        '    <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">Target Weak Topics</h3>',
-        '    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 18px; max-width: 400px; margin-left: auto; margin-right: auto;">Our algorithm selects your lowest-box facts across all unlocked levels for a high-yield recall drill.</p>',
-        '    <button class="btn-action-primary" id="btn-start-srs-review">Start Adaptive Review</button>',
+        '    <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">' + T("review.targetTitle") + '</h3>',
+        '    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 18px; max-width: 400px; margin-left: auto; margin-right: auto;">' + T("review.targetDesc") + '</p>',
+        '    <button class="btn-action-primary" id="btn-start-srs-review">' + T("review.start") + '</button>',
         '  </div>',
         '</div>'
       ].join('');
@@ -649,8 +653,8 @@
       var html = [
         '<div class="page-container">',
         '  <div style="margin-bottom: 24px;">',
-        '    <h2 style="font-size: 24px; font-weight: 900;">Daily Quests</h2>',
-        '    <p style="color: var(--text-secondary); font-size: 14px;">Quests reset every midnight. Complete all 3 to earn the Triad Badge!</p>',
+        '    <h2 style="font-size: 24px; font-weight: 900;">' + T("quests.title") + '</h2>',
+        '    <p style="color: var(--text-secondary); font-size: 14px;">' + T("quests.desc") + '</p>',
         '  </div>'
       ];
 
@@ -658,13 +662,13 @@
         var pct = Math.min(100, Math.floor((q.current / q.target) * 100));
         html.push('  <div class="quest-item">');
         html.push('    <div class="quest-top">');
-        html.push('      <span class="quest-desc">' + (q.completed ? '✅ ' : '🎯 ') + q.desc + '</span>');
+        html.push('      <span class="quest-desc">' + (q.completed ? '✅ ' : '🎯 ') + window.BiolingoI18n.questDesc(q) + '</span>');
         html.push('      <span class="quest-reward">+' + q.xp + ' XP</span>');
         html.push('    </div>');
         html.push('    <div class="quest-progress-bar">');
         html.push('      <div class="quest-progress-fill" style="width:' + pct + '%;"></div>');
         html.push('    </div>');
-        html.push('    <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">' + q.current + ' / ' + q.target + ' completed</div>');
+        html.push('    <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">' + T("quests.progress", { c: q.current, t: q.target }) + '</div>');
         html.push('  </div>');
       });
 
@@ -679,22 +683,23 @@
       var html = [
         '<div class="page-container">',
         '  <div style="margin-bottom: 24px;">',
-        '    <h2 style="font-size: 24px; font-weight: 900;">Achievements & Medals</h2>',
-        '    <p style="color: var(--text-secondary); font-size: 14px;">Demonstrate mastery across biomedicine, streak longevity, and doctoral milestones.</p>',
+        '    <h2 style="font-size: 24px; font-weight: 900;">' + T("badges.title") + '</h2>',
+        '    <p style="color: var(--text-secondary); font-size: 14px;">' + T("badges.desc") + '</p>',
         '  </div>',
         '  <div class="badges-grid">'
       ];
 
-      allBadges.forEach(function(b) {
+      allBadges.forEach(function(rawBadge) {
+        var b = window.BiolingoI18n.badge(rawBadge);
         var isUnlocked = !!unlocked[b.id];
         html.push('    <div class="badge-card' + (!isUnlocked ? ' locked' : '') + '">');
         html.push('      <div class="badge-icon">' + b.icon + '</div>');
         html.push('      <div class="badge-title">' + b.title + '</div>');
         html.push('      <div class="badge-desc">' + b.desc + '</div>');
         if (isUnlocked) {
-          html.push('      <div style="font-size: 10px; color: var(--accent-success); font-weight: 800; margin-top: 4px;">UNLOCKED</div>');
+          html.push('      <div style="font-size: 10px; color: var(--accent-success); font-weight: 800; margin-top: 4px;">' + T("badges.unlocked") + '</div>');
         } else {
-          html.push('      <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; margin-top: 4px;">LOCKED</div>');
+          html.push('      <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; margin-top: 4px;">' + T("badges.locked") + '</div>');
         }
         html.push('    </div>');
       });

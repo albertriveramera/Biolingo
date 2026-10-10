@@ -71,6 +71,32 @@ def main():
                 errors.append(f"Cloze sentence in {filename} missing {{blank}}: {s}")
             
     print(f"\nTotal curated facts registered: {total_facts}")
+
+    # Spanish translation coverage: every fact id must have a Spanish overlay
+    es_files = ["facts_es_hs.js", "facts_es_ug.js", "facts_es_ms.js", "facts_es_phd.js"]
+    es_ids = set()
+    for filename in es_files:
+        path = os.path.join(data_dir, filename)
+        if not os.path.exists(path):
+            errors.append(f"Missing Spanish file: {path}")
+            continue
+        with open(path, "r", encoding="utf-8") as f:
+            es_content = f.read()
+        file_ids = re.findall(r'"((?:hs|ug|ms|phd)-[a-z]+-\d+)":\s*\{', es_content)
+        for sid in file_ids:
+            if sid in es_ids:
+                errors.append(f"Duplicate Spanish translation: {sid}")
+            es_ids.add(sid)
+        for m in re.finditer(r'sentence:\s*"(.*?)",\s*answer:\s*"(.*?)",\s*options:\s*\[(.*?)\]', es_content):
+            if "{blank}" not in m.group(1):
+                errors.append(f"Spanish cloze missing {{blank}} in {filename}: {m.group(1)[:50]}")
+            if f'"{m.group(2)}"' not in m.group(3):
+                errors.append(f"Spanish cloze answer not in options in {filename}: {m.group(2)}")
+    for missing in sorted(all_fact_ids - es_ids):
+        errors.append(f"Missing Spanish translation for fact: {missing}")
+    for extra in sorted(es_ids - all_fact_ids):
+        errors.append(f"Spanish translation for unknown fact id: {extra}")
+    print(f"Spanish translations: {len(es_ids)}/{len(all_fact_ids)} facts covered")
     
     # Verify index.html exists and links all scripts
     index_path = os.path.join(base_dir, "index.html")
@@ -82,7 +108,9 @@ def main():
             expected_scripts = [
                 "curriculum.js", "facts_hs.js", "facts_ug.js", "facts_ms.js", "facts_phd.js",
                 "facts.js", "storage.js", "srs.js", "rewards.js", "audio.js",
-                "mascot.js", "diagrams.js", "questions.js", "ui.js", "app.js"
+                "mascot.js", "diagrams.js", "questions.js", "ui.js", "app.js",
+                "i18n.js", "i18n_es.js", "facts_es_hs.js", "facts_es_ug.js",
+                "facts_es_ms.js", "facts_es_phd.js"
             ]
             for s in expected_scripts:
                 if s not in html:

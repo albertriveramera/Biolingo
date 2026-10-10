@@ -45,7 +45,8 @@
     settings: {
       soundEnabled: true,
       hapticsEnabled: true,
-      theme: "dark"
+      theme: "dark",
+      language: "en"
     }
   };
 
