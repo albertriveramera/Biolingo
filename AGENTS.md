@@ -50,6 +50,20 @@ flowchart TD
 - **If `[REVISE]`**: Pass the reviewer's specific, actionable feedback back to the `worker`. Direct the worker to address every finding, then re-submit to the `reviewer`.
 - **If `[PASS]`**: Mark the task as verified and proceed to the next milestone.
 
-### 5. Delivery Phase
+### 5. Verification & Testing Standards
+- All code and content modifications must pass the unified test harness:
+  ```bash
+  python run_tests.py
+  ```
+- The test harness automatically checks:
+  1. Data integrity, fact schema, cloze syntax, and script links (`tests/validate.py`).
+  2. Leitner SRS math, level calculations, combo multiplier curves, and required assets (`tests/simulation_test.py`).
+- Inspect git status before concluding:
+  ```bash
+  git status
+  git diff --stat
+  ```
+
+### 6. Delivery Phase
 - Provide the user with a concise, high-level summary of what was completed and verified.
 - Highlight any key architectural decisions or next steps.
