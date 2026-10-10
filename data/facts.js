@@ -2,12 +2,18 @@
 // Combines all level banks and exposes query and lookup helpers
 
 (function() {
+  function localize(list) {
+    var i18n = window.BiolingoI18n;
+    if (!i18n || i18n.getLang() === "en") return list;
+    return list.map(function(f) { return i18n.fact(f); });
+  }
+
   function getCombinedFacts() {
     var hs = window.FACTS_HS || [];
     var ug = window.FACTS_UG || [];
     var ms = window.FACTS_MS || [];
     var phd = window.FACTS_PHD || [];
-    return [].concat(hs, ug, ms, phd);
+    return localize([].concat(hs, ug, ms, phd));
   }
 
   window.FactRegistry = {
@@ -31,10 +37,10 @@
     },
 
     getByLevel: function(levelId) {
-      if (levelId === "hs") return window.FACTS_HS || [];
-      if (levelId === "ug") return window.FACTS_UG || [];
-      if (levelId === "ms") return window.FACTS_MS || [];
-      if (levelId === "phd") return window.FACTS_PHD || [];
+      if (levelId === "hs") return localize(window.FACTS_HS || []);
+      if (levelId === "ug") return localize(window.FACTS_UG || []);
+      if (levelId === "ms") return localize(window.FACTS_MS || []);
+      if (levelId === "phd") return localize(window.FACTS_PHD || []);
       return [];
     },
 

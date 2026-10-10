@@ -15,29 +15,29 @@
 <body>
   <div id="app-root">
     <!-- Navigation (Mobile Bottom Bar / Desktop Sidebar) -->
-    <nav class="nav-sidebar" id="nav-sidebar" aria-label="Main Navigation">
+    <nav class="nav-sidebar" id="nav-sidebar" aria-label="Main Navigation" data-i18n-aria="nav.main">
       <div class="nav-brand">
         <span style="font-size: 26px;">⚡</span>
         <div>
           <div class="nav-brand-title">Biolingo</div>
-          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">Biomed & Neuro</div>
+          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;" data-i18n="brand.sub">Biomed & Neuro</div>
         </div>
       </div>
-      <button class="nav-item active" data-tab="path" aria-label="Learning Path">
+      <button class="nav-item active" data-tab="path" aria-label="Learning Path" data-i18n-aria="nav.pathAria">
         <span class="nav-icon">🗺️</span>
-        <span>Learn</span>
+        <span data-i18n="nav.path">Learn</span>
       </button>
-      <button class="nav-item" data-tab="review" aria-label="Spaced Repetition Review">
+      <button class="nav-item" data-tab="review" aria-label="Spaced Repetition Review" data-i18n-aria="nav.reviewAria">
         <span class="nav-icon">🧠</span>
-        <span>Review</span>
+        <span data-i18n="nav.review">Review</span>
       </button>
-      <button class="nav-item" data-tab="quests" aria-label="Daily Quests">
+      <button class="nav-item" data-tab="quests" aria-label="Daily Quests" data-i18n-aria="nav.questsAria">
         <span class="nav-icon">🎯</span>
-        <span>Quests</span>
+        <span data-i18n="nav.quests">Quests</span>
       </button>
-      <button class="nav-item" data-tab="badges" aria-label="Achievements and Profile">
+      <button class="nav-item" data-tab="badges" aria-label="Achievements and Profile" data-i18n-aria="nav.badgesAria">
         <span class="nav-icon">🏆</span>
-        <span>Badges</span>
+        <span data-i18n="nav.badges">Badges</span>
       </button>
     </nav>
 
@@ -53,20 +53,26 @@
 
   <noscript>
     <div style="padding: 24px; text-align: center; color: #fff; background: #111;">
-      <h2>JavaScript Required</h2>
-      <p>Please enable JavaScript to run Biolingo.</p>
+      <h2>JavaScript Required / Se requiere JavaScript</h2>
+      <p>Please enable JavaScript to run Biolingo. / Activa JavaScript para ejecutar Biolingo.</p>
     </div>
   </noscript>
 
   <!-- Core Data Banks -->
   <script src="./data/curriculum.js"></script>
+  <script src="./data/i18n_es.js"></script>
   <script src="./data/facts_hs.js"></script>
   <script src="./data/facts_ug.js"></script>
   <script src="./data/facts_ms.js"></script>
   <script src="./data/facts_phd.js"></script>
+  <script src="./data/facts_es_hs.js"></script>
+  <script src="./data/facts_es_ug.js"></script>
+  <script src="./data/facts_es_ms.js"></script>
+  <script src="./data/facts_es_phd.js"></script>
   <script src="./data/facts.js"></script>
 
   <!-- Game Engines & Services -->
+  <script src="./js/i18n.js"></script>
   <script src="./js/storage.js"></script>
   <script src="./js/srs.js"></script>
   <script src="./js/rewards.js"></script>

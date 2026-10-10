@@ -174,6 +174,7 @@
       }
     };
 
+    var hereLabel = window.BiolingoI18n ? window.BiolingoI18n.t("diagram.here") : "HERE";
     var target = (coords[diagramType] && coords[diagramType][targetLabel]) || { x: 250, y: 120, pinY: 60 };
     return [
       '<!-- Animated Target Pointer Pin -->',
@@ -183,7 +184,7 @@
       '  <line x1="' + target.x + '" y1="' + target.y + '" x2="' + target.x + '" y2="' + target.pinY + '" stroke="#f43f5e" stroke-width="2.5" stroke-dasharray="3"/>',
       '  <g transform="translate(' + (target.x - 22) + ', ' + (target.pinY - 14) + ')">',
       '    <rect width="44" height="22" rx="6" fill="#f43f5e"/>',
-      '    <text x="22" y="15" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">HERE</text>',
+      '    <text x="22" y="15" fill="#ffffff" font-size="' + (hereLabel.length > 5 ? 10 : 12) + '" font-weight="bold" text-anchor="middle">' + hereLabel + '</text>',
       '  </g>',
       '</g>'
     ].join('\n');
@@ -194,7 +195,7 @@
       if (DIAGRAMS[diagramName]) {
         return DIAGRAMS[diagramName](targetLabel);
       }
-      return '<div class="diagram-fallback">Diagram: ' + diagramName + ' (' + targetLabel + ')</div>';
+      return '<div class="diagram-fallback">' + (window.BiolingoI18n ? window.BiolingoI18n.t("diagram.fallback") : "Diagram") + ': ' + diagramName + ' (' + targetLabel + ')</div>';
     }
   };
 })();

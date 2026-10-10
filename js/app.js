@@ -10,6 +10,9 @@
   function initApp() {
     state = window.BiolingoStorage.load();
 
+    // Apply saved language (UI, questions and answers)
+    window.BiolingoI18n.initFromStorage(state.settings && state.settings.language);
+
     // Apply saved theme
     var theme = (state.settings && state.settings.theme) || "dark";
     document.documentElement.setAttribute("data-theme", theme);
@@ -198,7 +201,7 @@
     // Update streak
     var streakRes = window.BiolingoRewards.updateStreakOnStudy(state);
     if (streakRes.savedByFreeze) {
-      window.BiolingoUI.showToast("Streak Freeze saved your daily streak!", "🛡️");
+      window.BiolingoUI.showToast(window.BiolingoI18n.t("toast.freezeSaved"), "🛡️");
     }
 
     // Complete lesson / checkpoint logic
@@ -215,9 +218,9 @@
           }
         }
         window.BiolingoRewards.unlockAchievement(state, "skip_champ");
-        window.BiolingoUI.showToast("Level Skipped! Welcome to " + (lvlObj ? lvlObj.shortName : "Advanced"), "🚀");
+        window.BiolingoUI.showToast(window.BiolingoI18n.t("toast.levelSkipped", { name: lvlObj ? window.BiolingoI18n.level(lvlObj).shortName : window.BiolingoI18n.t("toast.advanced") }), "🚀");
       } else {
-        window.BiolingoUI.showToast("Score below 80%. Keep practicing!", "💡");
+        window.BiolingoUI.showToast(window.BiolingoI18n.t("toast.belowScore"), "💡");
       }
     } else if (currentLessonMeta.isSrsReview) {
       window.BiolingoRewards.unlockAchievement(state, "review_pro");
@@ -242,7 +245,7 @@
     var newBadges = window.BiolingoRewards.checkAllAchievements(state);
     newBadges.forEach(function(b) {
       window.BiolingoAudio.playBadgeUnlock();
-      window.BiolingoUI.showToast("Badge Unlocked: " + b.title, b.icon);
+      window.BiolingoUI.showToast(window.BiolingoI18n.t("toast.badge", { title: window.BiolingoI18n.badge(b).title }), b.icon);
     });
 
     window.BiolingoStorage.save(state);
@@ -281,7 +284,7 @@
         lvl.units.forEach(function(u) {
           if (u.id === nextUnit.id && state.progress.unlockedLevels.indexOf(lvl.levelId) === -1) {
             state.progress.unlockedLevels.push(lvl.levelId);
-            window.BiolingoUI.showToast("Unlocked new tier: " + lvl.shortName + "!", "🎉");
+            window.BiolingoUI.showToast(window.BiolingoI18n.t("toast.newTier", { name: window.BiolingoI18n.level(lvl).shortName }), "🎉");
           }
         });
       });
@@ -297,37 +300,47 @@
     var isDark = (state.settings && state.settings.theme === "dark") || !state.settings;
     var soundOn = !state.settings || state.settings.soundEnabled !== false;
 
+    var T = function(key) { return window.BiolingoI18n.t(key); };
+    var curLang = window.BiolingoI18n.getLang();
+    var langOptions = window.BiolingoI18n.languages.map(function(l) {
+      return '<option value="' + l.code + '"' + (l.code === curLang ? ' selected' : '') + '>' + l.label + '</option>';
+    }).join('');
+
     modal.innerHTML = [
       '<div class="modal-card">',
       '  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">',
-      '    <h3 style="font-size:20px; font-weight:900;">⚙️ Settings & Data</h3>',
+      '    <h3 style="font-size:20px; font-weight:900;">' + T("settings.title") + '</h3>',
       '    <button id="btn-close-modal" style="font-size:22px; color:var(--text-secondary);">✕</button>',
       '  </div>',
       '  <div style="display:flex; flex-direction:column; gap:16px;">',
       '    <div style="display:flex; justify-content:space-between; align-items:center;">',
-      '      <div><strong>Theme</strong><div style="font-size:12px; color:var(--text-secondary);">Switch between Dark and Light mode</div></div>',
-      '      <button class="btn-action-primary" id="btn-toggle-theme" style="padding:8px 16px; font-size:13px;">' + (isDark ? '🌙 Dark' : '☀️ Light') + '</button>',
+      '      <div><strong>' + T("settings.theme") + '</strong><div style="font-size:12px; color:var(--text-secondary);">' + T("settings.themeDesc") + '</div></div>',
+      '      <button class="btn-action-primary" id="btn-toggle-theme" style="padding:8px 16px; font-size:13px;">' + (isDark ? T("settings.dark") : T("settings.light")) + '</button>',
       '    </div>',
       '    <div style="display:flex; justify-content:space-between; align-items:center;">',
-      '      <div><strong>Audio & Sound FX</strong><div style="font-size:12px; color:var(--text-secondary);">Synthesized Web Audio sound</div></div>',
-      '      <button class="btn-action-primary" id="btn-toggle-sound" style="padding:8px 16px; font-size:13px;">' + (soundOn ? '🔊 On' : '🔇 Muted') + '</button>',
+      '      <div><strong>' + T("settings.audio") + '</strong><div style="font-size:12px; color:var(--text-secondary);">' + T("settings.audioDesc") + '</div></div>',
+      '      <button class="btn-action-primary" id="btn-toggle-sound" style="padding:8px 16px; font-size:13px;">' + (soundOn ? T("settings.on") : T("settings.muted")) + '</button>',
+      '    </div>',
+      '    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">',
+      '      <div><strong>🌐 ' + T("settings.language") + '</strong><div style="font-size:12px; color:var(--text-secondary);">' + T("settings.languageDesc") + '</div></div>',
+      '      <select id="select-language" aria-label="' + T("settings.language") + '" style="padding:8px 12px; font-size:13px; font-weight:700; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-surface); color:var(--text-primary); cursor:pointer;">' + langOptions + '</select>',
       '    </div>',
       '    <hr style="border:none; border-top:1px solid var(--border-color); margin:4px 0;"/>',
       '    <div>',
-      '      <strong>Save Data & Portability</strong>',
-      '      <div style="font-size:12px; color:var(--text-secondary); margin-bottom:10px;">Export progress to file or transfer across phone and PC.</div>',
+      '      <strong>' + T("settings.saveData") + '</strong>',
+      '      <div style="font-size:12px; color:var(--text-secondary); margin-bottom:10px;">' + T("settings.saveDesc") + '</div>',
       '      <div style="display:flex; gap:10px;">',
-      '        <button class="btn-action-primary" id="btn-export-save" style="flex:1; padding:10px; font-size:13px;">💾 Export Save</button>',
-      '        <button class="btn-action-primary" id="btn-import-save" style="flex:1; padding:10px; font-size:13px; background:#475569; box-shadow:0 4px 0 #334155;">📂 Import Save</button>',
+      '        <button class="btn-action-primary" id="btn-export-save" style="flex:1; padding:10px; font-size:13px;">' + T("settings.export") + '</button>',
+      '        <button class="btn-action-primary" id="btn-import-save" style="flex:1; padding:10px; font-size:13px; background:#475569; box-shadow:0 4px 0 #334155;">' + T("settings.import") + '</button>',
       '        <input type="file" id="file-import-input" accept=".json" style="display:none;"/>',
       '      </div>',
       '    </div>',
       '    <hr style="border:none; border-top:1px solid var(--border-color); margin:4px 0;"/>',
       '    <div>',
-      '      <button id="btn-reset-save" style="color:var(--accent-danger); font-size:13px; font-weight:700;">⚠️ Reset All Progress</button>',
+      '      <button id="btn-reset-save" style="color:var(--accent-danger); font-size:13px; font-weight:700;">' + T("settings.reset") + '</button>',
       '    </div>',
       '  </div>',
-      '</div>'
+      '</div>',
     ].join('');
 
     document.body.appendChild(modal);
@@ -341,7 +354,17 @@
       document.documentElement.setAttribute("data-theme", nextTheme);
       state.settings.theme = nextTheme;
       window.BiolingoStorage.save(state);
-      this.textContent = nextTheme === "dark" ? "🌙 Dark" : "☀️ Light";
+      this.textContent = nextTheme === "dark" ? window.BiolingoI18n.t("settings.dark") : window.BiolingoI18n.t("settings.light");
+    };
+
+    // Change language: re-render whole game (UI, questions and answers) in the new language
+    document.getElementById("select-language").onchange = function() {
+      state.settings.language = this.value;
+      window.BiolingoI18n.setLang(this.value);
+      window.BiolingoStorage.save(state);
+      modal.remove();
+      renderCurrentTab();
+      openSettings();
     };
 
     // Toggle sound
@@ -350,7 +373,7 @@
       state.settings.soundEnabled = nextSound;
       window.BiolingoAudio.setMuted(!nextSound);
       window.BiolingoStorage.save(state);
-      this.textContent = nextSound ? "🔊 On" : "🔇 Muted";
+      this.textContent = nextSound ? window.BiolingoI18n.t("settings.on") : window.BiolingoI18n.t("settings.muted");
       if (nextSound) window.BiolingoAudio.playCorrect(1);
     };
 
@@ -373,11 +396,12 @@
         var res = window.BiolingoStorage.importJSON(evt.target.result);
         if (res.success) {
           state = res.state;
+          window.BiolingoI18n.initFromStorage(state.settings && state.settings.language);
           modal.remove();
           renderCurrentTab();
-          window.BiolingoUI.showToast("Save file imported successfully!", "✅");
+          window.BiolingoUI.showToast(window.BiolingoI18n.t("settings.imported"), "✅");
         } else {
-          alert("Failed to import save: " + res.error);
+          alert(window.BiolingoI18n.t("settings.importFail") + res.error);
         }
       };
       reader.readAsText(file);
@@ -385,11 +409,14 @@
 
     // Reset
     document.getElementById("btn-reset-save").onclick = function() {
-      if (confirm("Are you sure you want to completely reset all your Biolingo progress? This cannot be undone.")) {
+      if (confirm(window.BiolingoI18n.t("settings.resetConfirm"))) {
+        var keepLang = window.BiolingoI18n.getLang();
         state = window.BiolingoStorage.reset();
+        state.settings.language = keepLang;
+        window.BiolingoStorage.save(state);
         modal.remove();
         renderCurrentTab();
-        window.BiolingoUI.showToast("Progress has been reset.", "🔄");
+        window.BiolingoUI.showToast(window.BiolingoI18n.t("settings.resetDone"), "🔄");
       }
     };
   }
